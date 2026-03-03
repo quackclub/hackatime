@@ -250,6 +250,10 @@ class Api::Hackatime::V1::HackatimeController < ApplicationController
         new_heartbeat.raw_heartbeat_upload ||= @raw_heartbeat_upload
         new_heartbeat.save! if new_heartbeat.changed?
       end
+      # Check for Unknown project threshold notification
+      if new_heartbeat.persisted?
+        UnknownProjectNotifier.notify_if_threshold_reached(@user)
+      end
       queue_project_mapping(heartbeat[:project])
       results << [ new_heartbeat.attributes, 201 ]
       should_enqueue_mirror_sync ||= source_type == :direct_entry
