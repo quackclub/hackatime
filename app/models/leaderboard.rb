@@ -9,6 +9,7 @@ class Leaderboard < ApplicationRecord
 
   enum :period_type, {
     daily: 0,
+    all_time: 1,
     last_7_days: 2
   }
 
@@ -21,7 +22,9 @@ class Leaderboard < ApplicationRecord
   end
 
   def date_range_text
-    if last_7_days?
+    if all_time?
+      "All Time"
+    elsif last_7_days?
       "#{(start_date - 6.days).strftime('%b %d')} - #{start_date.strftime('%b %d, %Y')}"
     else
       "Last 24 hours"

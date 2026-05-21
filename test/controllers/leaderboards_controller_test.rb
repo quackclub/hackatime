@@ -50,6 +50,17 @@ class LeaderboardsControllerTest < ActionDispatch::IntegrationTest
     assert_inertia_prop "period_type", "daily"
   end
 
+  test "index accepts all_time period_type" do
+    user = create_user(username: "all_time_user")
+    create_boards_for_today(period_type: :all_time)
+
+    sign_in_as(user)
+    get leaderboards_path(period_type: "all_time")
+
+    assert_response :success
+    assert_inertia_prop "period_type", "all_time"
+  end
+
   test "validated_period_type does not intern arbitrary symbols" do
     user = create_user(username: "bad_period_user")
     create_boards_for_today(period_type: :daily)

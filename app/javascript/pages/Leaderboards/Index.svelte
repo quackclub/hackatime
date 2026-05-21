@@ -97,7 +97,9 @@
 
   const dateRangeText = $derived(
     leaderboard?.date_range_text ??
-      (period_type === "last_7_days"
+      (period_type === "all_time"
+        ? "All Time"
+        : period_type === "last_7_days"
         ? (() => {
             const end = new Date();
             const start = new Date(end);
@@ -133,6 +135,20 @@
         >
           <Twemoji emoji="🌐" alt="Globe" class="inline-block w-5 h-5" />
           <span class="hidden sm:inline">Global</span>
+        </Link>
+
+        <Link
+          href={leaderboardPath({ period_type: "all_time", scope })}
+          component="Leaderboards/Index"
+          pageProps={(current) => ({
+            ...resetEntries(current),
+            period_type: "all_time",
+          })}
+          class={tabClass(period_type === "all_time")}
+          preserveScroll
+        >
+          <span class="sm:hidden">All</span>
+          <span class="hidden sm:inline">All Time</span>
         </Link>
 
         {#if country.available}

@@ -32,6 +32,23 @@ class LeaderboardUpdateJobTest < ActiveJob::TestCase
     assert_operator board.generation_duration_seconds, :>=, 1
   end
 
+  test "perform builds all_time leaderboard across the full history" do
+    historical_user = create_user(username: "lb_job_all_time", github_uid: "GH_LEADERBOARD_JOB_ALL_TIME")
+
+    create_heartbeat_pair(user: historical_user, started_at: 90.days.ago, editor: "vscode")
+
+    LeaderboardUpdateJob.perform_now(:all_time, Date.current, force_update: true)
+
+    board = Leaderboard.find_by!(
+      start_date: Date.current,
+      period_type: :all_time,
+      timezone_utc_offset: nil
+    )
+
+    assert_equal [ historical_user.id ], board.entries.order(:user_id).pluck(:user_id)
+    assert_equal 120, board.entries.find_by!(user_id: historical_user.id).total_seconds
+  end
+
   private
 
   def create_user(username:, github_uid:)

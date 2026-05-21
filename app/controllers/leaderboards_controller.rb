@@ -23,7 +23,7 @@ class LeaderboardsController < InertiaController
 
   def validated_period_type
     p = (params[:period_type] || "daily").to_s
-    %w[daily last_7_days].include?(p) ? p.to_sym : :daily
+    %w[daily all_time last_7_days].include?(p) ? p.to_sym : :daily
   end
 
   def validated_leaderboard_scope(country)

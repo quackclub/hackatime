@@ -5,6 +5,8 @@ module LeaderboardDateRange
     case period
     when :weekly
       (date.beginning_of_day...(date + 7.days).beginning_of_day)
+    when :all_time
+      Time.at(0)...Time.current
     when :last_7_days
       ((date - 6.days).beginning_of_day...date.end_of_day)
     else
